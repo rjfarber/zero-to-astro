@@ -1,4 +1,216 @@
 <h1>Zero-to-Astro</h1>
 <h2>by Ryan Farber 2023-05-04</h2>
 <h3>Last modified: 2023-05-04</h3>
+<h4>What is this?</h4>
+<p>The goal of this site is to explain in a step-by-step manner how to perform astrophysics research.
+While academic papers' methods sections should do this, these are written for experts within respective subfields.
+This tends to enhance the "ivory tower" problem wherein the only way to become an expert in a specific topic
+is to be trained by an existing topic. While this is arguably the most time-effective way to become a master,
+several problems exist with the typical apprenticeship method. For one, the student is more-or-less at the
+mercy of their supervisor. Moreover, top-rate researchers are certainly first-rate at doing but not always
+in explaining (and unfortunately many in fact loathe teaching!?). Furthermore, this system perpetuates a
+rich-become-richer model in academia: students who do not happen to attend the same institution as an
+expert are often completely unable to learn a topic; and in choosing interns or students to hire, most
+experts highly value previous research in their specific topic. In fact, the immediate impetus for my
+creating this site is to apply to an exoplanet job posting. While there are plenty of folks at MPE, ESO, or
+the surroundings I can probably talk to, I thought I'd also see how independent of a researcher I've become.
+It's also an exercise for me to see how quickly I can learn something I've had minimal exposure to.
+I also like teaching and would like to create tutorials for students to learn new topics themselves.</p>
 
+<h5>This post's goals</h5>
+<p>My goal is to reproduce figures from Birkby et al. 2013. This is Prof. Jayne Birkby's highest cited 
+1st-authored paper (over 300 at time of writing according to Google Scholar; for reference that's a ton(!) 
+suggesting this paper made quite an impact in the field). Since I typically spend rather too much time
+reading papers (indirect procrastination) my specific goal is to not read the paper and just go to
+the points of interest.</p>
+
+<h6>Self-log</h6>
+<ol>
+  <li>First I scrolled down until I came across Figure 1. 
+    <ul>
+      <li>
+For those with screen readers, this is typically
+indicated in bold font and spelled out as "Figure 1." (without the quotes). I also think figure captions
+are typically more important than the image itself but I'll try to explain verbally any important image
+features as I go along.
+      </li>
+      <li>
+The caption mentions the top panel is a CRIRES pipeline spectra. So probably I'll need to install
+(or re-create) this CRIRES pipeline after I find the raw data in order to generate the spectrum.
+The cpation also talks a lot about SYSREM. Note the characters are monospaced which typically suggests
+this is some sort of code (such as a software package).
+      </li>
+    </ul>
+  </li>
+
+  <li>
+Second I searched (Control-F / CMD-F) for Fig. 1 to find the first place the figure was
+described in the text. 
+    <ul>
+      <li>
+That was in Section 2.2 Basic data reduction. However, we still need the data to reduce.
+      </li>
+    </ul>
+  </li>
+  <li>Third I skimmed the text backward to the beginning of section 2.
+    <ul>
+      <li>
+The second section is typically the 'methods' section in papers.
+      </li>
+      <li>
+Towards the beginning of subsection 2.1 Observations I found that the target was HD 189733,
+and the observations were part of an ESO programme (186.C-0289).
+      </li>
+      <li>
+Theoretically, I could just email the first author for the data. In fact, most astrophysics
+journals today require a Data Availability section in the paper (so I checked but this paper
+is too old / doesn't have one). But a lot of scientists are
+slow to respond to emails. However, even then it's no guarantee they'll find the data quickly.
+This paper is 10 years old and I for example have my old paper data on a few harddrives. I know
+where they are since I moved recently but otherwise it'd take me a while to dig them up.
+Scientists are super busy people and typically don't enjoy the thankless task of sharing their
+old data.
+      </li>
+      <li>
+Anyway, the good news is this data was part of that large ESO programme I alluded to earlier.
+I'm actually not sure what I googled to stumble upon it (searching for the program id didn't help
+much) but I pretty quickly found archive.eso.org (googling eso data archive works! just be sure
+not to make my dyslexic mistake of "eos" ;)
+      </li>
+    </ul>
+  <li>Fourth, I found myself at http://archive.eso.org/eso/eso_archive_main.html
+    <ul>
+      <li>
+Admittedly my instinctive reaction was "oh noooo" as you're provided with the equivalent
+of a pilot's console - a huge mess of buttons, checkboxes, wrapped in visually disturbing colors.
+      </li>
+      <li>
+But that's okay! Just refill your cup of water or take a deep breath. We're going to overcome this
+sensory overload together :)
+      </li>
+      <li>
+I slowly read the information from top-bottom until I arrived at the Target, Program, and Scheduling
+Information section. There were a lot of fields I didn't know the information of but from the paper
+I entered HD 189733 for the target in the green box on the left, the Night in the pink box on the right
+(2011 08 01), as well as the program id (186.C-0289).
+      </li>
+      <li>
+It took a moment to figure out what to do next -- the search button is/was at the top left-ish part of the
+screen (above the Target Program and Scheduling Information section). So I hit that search button.
+      </li>
+      <li>
+The results look promising! In the OBJECT column there's mostly HD 189733 which is the target data.
+There's also a "SKY" entry which is probably for flatfield division and two "OBJECT" entries which might
+be for calibration or background subtraction. Anyway, we'll figure those out later.
+      </li>
+<li>
+It's also now evident that CRIRES is the name of the instrument doing the observing.
+One thing that's a little weird is that a table at the bottom says the cumulative exposure time
+was 4 hours whereas the paper says the observations were for 5 hours. It's possible the time allocation
+committee gave them 5 hours but for some reason (e.g., clouds or the observers before them ran late, etc.)
+they only were given 4 hours and the paper effectively has a typo. However I'm also wondering if
+the observations began before midnight on August 10th or something like that. That'd be 2.5 hours
+before the first data entry which seems a bit unlikely though. I also just realized SKY is unlikely
+for flatfielding as it was during the middle of their observing run (so in the middle of the night)
+so maybe that's for background subtraction. Again, we'll figure that out later.
+</li>
+<li>
+Let's download this data!
+</li>
+<li>
+Reading the fine print at the top of the page, it seems we need to fill out a registration
+form which hyperlinks to a login page.
+</li>
+<li>
+I clicked on "I would like to create an account". And filled out some information on the resulting
+page. Note that for the password field they only allow a few symbols :(
+They also allowed me to use "password" :(
+I didn't submit with "password" as my password though don't worry!
+The downside is I can't do my usual trick for generating a unique password per site
+so I likely won't remember it. Oh well, forgot password is my fren :)
+</li>
+<li>
+After filling out the form I then received an email (not immediately but within a few minutes)
+with a link I clicked to activate my account.
+</li>
+<li>
+Returning to the webpage with the form (I left it open; I had control-clicked on the registration
+link previously). I clicked all the green boxes at the left-most column (annoying there's no
+select-all option...) and then clicked the "Request marked datasets (new service)" button
+which is/was immediately below the table on the left.
+Note that the site is just http (not secure) so ideally do this on a burner device as ne'er do wells can
+probably spoof/hack the site pretty easily...
+</li>
+<li>
+Clicking that button brought me to a visually much more appealing page, which was also by default
+in dark mode (it's daytime now but still appreciated). Apparently I selected 99 files which is
+close to half a GB. So the download might take a while. Also it says that none of data has
+processed data available. That's fine by me since I'd like to try to do that myself anyway - maximal
+learning! :)
+</li>
+<li>
+There were three download option. I clicked the "download zip file" option (the shell script probably
+uses wget, which might be smarter for larger datasets. I don't know how that works under-the-hood but
+it might be like rsync and be able to gracefully resume if the connection is intermittent. My connection
+is okay though so I'll just do the ZIP. This site actually is secure which is much better. You should
+probably check the address (since the previous page was not secure) to make sure it's archive.eso.org
+and even then better to download on a burner device in case the site gets hacked and download malware.
+I'm hoping hackers are astro lovers tho and will leave eso alone for now :)
+</li>
+<li>
+I went for a little snack and it must've downloaded pretty fast! Was done about 8 minutes ago.
+Your mileage may vary though; my download speed should be pretty good (for 2023) since I'm at an institute.
+</li>
+<li>
+I then created a 'data' directory in this github repo, `mv`'d the downloaded zip file to here and unzipped
+it (`unzip` command on mac osx 12.1 and I think on linux you can install with your package manager if you
+don't have it already; you probably would have gunzip (GNU unzip) tho).
+</li>
+<li>
+There are a lot of CRIRE*.fits.Z files. I'm not sure about the .Z at the end (maybe each file is compressed?)
+but FITS is a typical astro image/file format. There's also a few readme*.txt files I'll look at next.
+</li>
+<li>
+readme_archive.txt indicates which files weren't downloaded (if they're missing or top-secret apparently).
+It didn't list any which is nice :)
+</li>
+<li>
+The other readme didn't have anything apparently useful in it, just a list of files with name conversions
+(but not apparently present for what I downloaded).
+</li>
+<li>
+Now that we have the data, let's go back to the paper and see what they say about how they processed it.
+</li>
+<li>
+Okay! Back at Section 2.2 of Birkby et al. 2013 it says they used version 2.2.1 of CRIRES `ESOREX` pipeline
+with ESOREX in a monospace font. Let's google for that.
+</li>
+<li>
+I found https://www.eso.org/sci/software/cpl/esorex.html which explains EsoRex stands for ESO Recipe Execution
+Tool.
+</li>
+<li>
+On the downloads page the oldest version I can see is for EsoRex 3.13.2.
+So we'll hope nothing changed too drastically the past 10 years and just go with the latest
+version I guess...
+</li>
+<li>
+Downloaded esorex-3.13.6.tar.gz (which went super quick!). This was in the "Current CPL Release"
+table. 
+</li>
+<li>
+I then created a 'code' directory in this github repo, `mv`'d it to there and used 'tar xvzf esorex-3.13.6.tar.gz'
+which unzips (gz stands for GNU zip) via the "z" option and then extracts the tar archive (sort of like unzipping
+but note that tar doesn't compress as much as it just reconfigures directories/files into a single file) with
+the "x" option. The "v" option stands for verbose and is why all the filenames show up as they're untarred.
+The "f" option I don't remember, so we'll use 'man tar' to find out. There's a lot of information in manual pages
+and this should be the first place you look to learn more about a command if you really want a deep understanding
+of unix systems (or so the old grouches on stackoverflow say at least). Anyway I jumped down to -f which indicates
+the option is for specifying the name (important!)
+</li>
+<li>
+Anyway, now we probably need to set up / install esorex. That'll have to wait until tomorrow for me though!
+</li>
+    </ul>
+  </li>
+</ol>
