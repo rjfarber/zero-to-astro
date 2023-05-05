@@ -213,4 +213,211 @@ Anyway, now we probably need to set up / install esorex. That'll have to wait un
 </li>
     </ul>
   </li>
+  <li>Day 2</li>
+<ul>
+<li>
+Okay! Back to setting up / installing esorex. First looking at the README, it mentions I need
+ISO-C++ and a C++ compiler (ideally a specific version of GNU gcc). Since I'm on a mac, I have
+clang (apple's version) for gcc not that specific GNU version so if something goes wrong I might
+look into this more, but it probably doesn't matter.
+</li>
+<li>
+More importantly, I need CPL, which was also available on the same download page as esorex. So
+I'll download + set up / install CPL first :)
+</li>
+<li>
+I downloaded CPL but realized I really ought to check the md5 sum compared to the one they provide.
+It's quite nice they do this which guarantees file integrity / that we're downloading what we
+expect (of course someone malicious that can change the download *might* also be able to change
+the md5sum displayed too...but we'll hope not).
+</li>
+<li>
+Unfortunately 'md5sum -c esorex-3.13.6.tar.gz' gives md5sum command not found. So I googled 
+"mac md5sum command not found" and the first page was a github issue for some random repo (openmaptiles),
+but the important thing is that someone mentioned one can use 'brew install md5sha1sum' to install.
+If you cannot use 'brew' (and are on mac) then you'll need to google how to set it up (need to
+activate command line tools I think).
+</li>
+<li>
+Anywho 'brew install md5sha1sum' installed md5sum successfully. However, ESO's recommended command
+of 'md5sum -c filename' (with filename==esorex-3.13.6.tar.gz to start and later the cpl file downloaded)
+Gave an 'error could not parse check file'. So I googled 'md5sum Could not parse check file'. The top
+link was by oreilly.com (sort of strange...) and it mentions basic usage is 'md5sum myfile' so I removed
+the -c option and it worked :)
+</li>
+<li>
+Unfortunately, brew didn't install a man page for md5sum so I'm not sure what -c was for.
+Anyway 'md5sum esorex-3.13.6.tar.gz' generated 04dba43ece4c3df2f8d9b9dcc0cd8e3a. That looks
+awfully similar to what is listed on the website but how can we find out without making our
+eyes bleed?
+</li>
+<li>
+Python to the rescue! If you type 'python' on the command line you'll instead have a python command
+prompt (previously we were in shell (more specifically zsh for me, possibly bash for you)). I then
+ran "04dba43ece4c3df2f8d9b9dcc0cd8e3a" == "04dba43ece4c3df2f8d9b9dcc0cd8e3a" where the first string
+I copy-pasted from the output of md5sum and the second string I copy-pasted from the ESO website.
+That returned True meaning we're good.
+</li>
+<li>
+I then did the same for the cpl file just downloaded (and then moved it to the code directory and
+untarred - exercise to the reader: 1) try to check the file integrity of what you downloaded using
+md5sum, 2) if all good in step 1, untar. Try to do this without looking above. Google if you need
+help. If this takes longer than a few minutes though feel free to look above. If you have trouble
+remembering tar arguments my favorite xkcd commiserates: https://xkcd.com/1168/
+</li>
+<li>
+Anyway, the fine print under the CPL download on the ESO site mentions CPL requires CFITSIO 3.350
+or later (and in case you were wondering, yes, installing / setting up software is still the hardest
+part in astrophysics research in this year of 2023...)
+</li>
+<li>
+Googling "CFITSIO install mac" brought up a nasa.gov link first. But in a rare act of scrolling down
+(particularly since I'm typing this as I go which nicely slows things down a bit and I think improves
+my attention span too) I noticed the third link is a homebrew formula! You can use macports if you
+prefer (which apparently is what the NASA site talks through) but I'm used to using brew for pretty
+much everything these days.
+</li>
+<li>
+So I copy pasted 'brew install cfitsio' from the brew formula (note that copy-paste is your friend!
+The best engineers/researchers copy-paste. For one thing, typing everything out enhances the likelihood
+of an RSI (repetitive stress injury; I've unfortunately had many because I don't enjoy taking breaks...
+right now I feel some pain beginning in my right hand due to all this typing). For another thing,
+you don't get any points for memorizing things. I'd award more points for the person that knows how
+to ~derive knowledge than one who memorizes the "answer" (that is, google your way to a brew formula
+or valid tar command). Over time of using commands over and over you'll unfortunately memorize a few
+(it took me a while for tars but I got there after a few years).
+</li>
+<li>
+Anyway, 'brew install cfitsio' spit out a lot of stuff. You don't typically want to read the gibberish
+but 'cfitsio --version' gave a 'command not found' error so this time we'll skim the brew output
+and find the version installed. For me, that was found in this line (I looked from bottom to top, not
+necessarily sequentiallyt tho): 🍺  /opt/homebrew/Cellar/cfitsio/4.2.0: 17 files, 3.1MB 
+This is again higher than the version esorex requested. Hopefully that's fine but we'll keep in
+mind there could be version compatibility issues.
+</li>
+<li>
+Now I really will take a few minute break :)
+</li>
+<li>
+The other benefit of breaks is for hydration! Anyway, now that we have cfitsio installed
+let's return to cpl. Looking at the README it says that the required dependencies are
+CFITSIO (all good), wcslib 4.24+ (?) and fftw 3.3.3+ (prob not installed).
+</li>
+<li>
+I don't know what wcslib is. FFTW stand for fastest fourier transform in the west
+(the creators have a nice sense of nameing :) and probably is a good idea to have
+otherwise are analysis might be a lot slower.
+</li>
+<li>
+Anyway, let's try to see if we have either of these already and/or install them.
+Googling 'wcslib mac' brought up a brew recipe! Hurrah!! So, I copy-pasted
+'brew install wcslib' which installed version 7.12_1.
+</li>
+<li>
+Next, I Google'd (btw I philosophically prefer Brave search but unfortunately the results
+are not nearly as useful as Google..) 'fftw mac brew' (since brew would be my preferred
+way to install) and there is a formula! So actually installation is not nearly as painful
+as 10-20 years ago :) 
+</li>
+<li>
+The brew install for fftw took more than a few seconds (was installing lots of things)
+so I took a break and came back. The bottom message said something about PATH so I took
+a closer look at the output. It's talking about sphinx-doc which I don't care about
+(it's for documentation which is important but not today!). I don't see any errors
+scrolling up so we'll assume for now that fftw installed successfully.
+</li>
+<li>
+Now let's return to installing CPL! I scrolled down and read a decent bit of the CPL
+readme. It does a quite nice job of describing how to install the dependencies but it
+assumes we built from source whereas we used brew. So I got to thinking: since cfitsio
+was from nasa but was on brew, maybe cpl is on brew too? So I Google'd 'cpl mac brew'
+and it showed up! Note that there could be multiple libraries called cpl (and generally
+if the name is short or common) but the formula page links to eso.org.
+</li>
+<li>
+So I copy-pasted the formul 'brew install cpl' and it installed 7.3.2. I'll probably delete
+cpl from the 'code' directory but will leave it alone for now. I Google'd 'esorex mac brew'
+but that didn't turn up a formula. So the question is whether we can actually install esorex
+or if we'll have to install all the dependencies from source / do some configuring.
+</li>
+<li>
+Note that the README mentions that when executing the configure script to specify where
+cfitsio and cpl were installed. I tried 'which cpl' (and same for cfitsio) but my system
+doesn't seem to know where they are. The README also mentions one can instead use CFITSIODIR
+and CPLDIR environment variables. Unfortunately 'echo $CFITSIODIR' (and CPLDIR) return nothing.
+Too bad, I was hoping brew handled those. Anyway, it mentions the INSTALL file has more specific
+directions.
+</li>
+<li>
+Actually the INSTALL file I have appears to be the template from GNU. Which is not immediately
+helpful but it does have some interesting/useful information on generally the command flow.
+We'll go ahead and give it a blind shot but probably installation will fail and we'll have to
+figure out where brew installed cfitsio and cpl.
+</li>
+<li>
+Running './configure' in the 'esorex-3.13.6' directory did indeed error, saying libcext headers
+were not found. That's rather obtuse but probably refers to either cfitsio or cpl. So let's
+figure out where those were installed.
+</li>
+<li>
+I google'd "where does brew install packages" and clicked on the second link which is
+apple.stackexchange.com. Generally stackexchanges are some of the best places to find clear
+and concise answers to programming/software problems. It mentions the command 'brew info packagename'
+will show the path. 'brew info cpl' brought up quite a few lines but does indeed mention the path
+is /opt/homebrew/Cellar/cpl/7.3.2. So I set the CPLDIR environment variable to that with
+'export CPLDIR=/opt/homebrew/Cellar/cpl/7.3.2'. Note that it was probably better to have googled
+more generically 'where does brew install packages' than for CPL specifically as CPL was only installed
+once in the past 30 days (by brew which means by me) 123 days this past year. Generally, not a ton
+of people use highly specialized astrophysics software so there often isn't a ton of informational
+content on how to install stuff. ESO seems to be pretty good and hopefully this will also help some people. 
+</li>
+<li>
+Next, I similarly set my CFITSIODIR environment variable, which I'll leave as an exercise to the reader.
+</li>
+<li>
+Note that the spelling of CFITSIODIR and CPLDIR must be exact otherwise the system won't find them.
+</li>
+<li>
+This time running './configure' in 'esorex-3.13.6' worked! That is, it generated a Makefile and
+didn't end with an error.
+</li>
+<li>
+We'll next try running the Makefile. I'll try 'make -j 8' to run in parallel on 8 cores/threads.
+If you're running on a shared system you might want to consult with your system admin how many cores
+you can run on (but generally 8 is fine these days or if you want to play it safe just use 2 or 4).
+</li>
+<li>
+The downside of 'make -j 8' (and generally, performing make in parallel) is that errors can
+appear before the end of the file, as it depends which processor/thread encounters an error when.
+Anyway, I scrolled up and only noticed warnings. Probably it would've been better to pipe the output
+to a file so one could grep for errors. But we'll assume for now that it worked.
+</li>
+<li>
+The next step typically is to run make install. That generated a lot of 'nothing to be done'
+messages which makes me think the make command probably didn't work previously. But maybe everything is
+fine. I tried 'make installcheck' as a test but that also generated a lot of 'nothing to be done' messages.
+So I'm still not sure if esorex is installed or not.
+</li>
+<li>
+Usually the result of installing from source is the creation of a 'bin' directory in the package containing
+a binary with a name that matches e.g., esorex. Unfotunately no 'bin' directory was created. There are files
+called esorex in an 'etc' as well as a 'src' directory. Are they the same? Unfortunately, using the 'diff'
+command suggests they're different :(
+Let's see if there's a hello world example or some quickstart in the documentation.
+</li>
+<li>
+Back on https://www.eso.org/sci/software/cpl/esorex.html there is a "Using EsoRex" section. Probably
+the first thing to do is 'esorex --help' just typing that of course gives command not found. It turns
+out that the 'esorex' in the 'etc' directory is a text file so maybe the one in 'src' is the correct
+binary!? From the 'esorex-3.13.6' directory, doing './src/esorex --help' spat out some stuff that looks
+correct!
+</li>
+<li>
+Okay! So possibly esorex is installed correctly. I've now skimmed the rest of the esorex.html page from
+eso.org. There's no real hello world example that I see. One thing that looks promising is the "Sets of
+frames" section, which mentions to check documentation for a given instrument to find a concrete example
+for that instrument. I'll give that a shot tomorrow. (I spent 2 hours on this on day 1 and 90-120 minutes
+today (including breaks); the goal is ~2 hours per day).
+</li>
+</ul>
 </ol>
