@@ -419,5 +419,164 @@ frames" section, which mentions to check documentation for a given instrument to
 for that instrument. I'll give that a shot tomorrow. (I spent 2 hours on this on day 1 and 90-120 minutes
 today (including breaks); the goal is ~2 hours per day).
 </li>
+<li>
+Day 3, session 1 (~30 minutes).
+</li>
+<li>
+Okay! So now I'm going to try to find documentation for the CRIRES instrument.
+</li>
+<li>
+I googled 'eso crires instrument documentation' and the first link was
+an eso.org page 'Manuals - CRIRES' from there I clicked on the
+Data Reduction Cookbook for Period 93 - which is again a bit ahead
+of the time probably compared to Birkby+ 2013. I then skimmed
+the table of contents and there's probably a lot of useful information
+there.
+</li>
+<li>
+Looking back at Birkby+ 2013 Sec 2.2 it doesn't really say much about
+how esorex was used exactly. The first paragraph gives the overall
+procedure which is nice and the second paragraph mentions that their
+first step was removing bad columns / bad pixels which were identified
+by eye. So I'm now thinking maybe I should just try to plot the fits
+data in python and return to crires docs later.
+</li>
+<li>
+I wasn't sure how to do that best so I googled 'plot fits file python'
+which brought me to astropy docs.
+</li>
+<li>
+I created a 'scripts' directory in here to store my python scripts
+and copy-pasted quite a few lines from this astropy docs page
+(if the link dies, hopefully you can still see my script...)
+https://docs.astropy.org/en/stable/generated/examples/io/plot_fits-image.html
+</li>
+<li>
+I then created a virtual environment (python3 -m venv env-Z2A) which is
+nice for encapsulating installs and activated it (source env-Z2A/bin/activate)
+I then upgraded pip (I always forget the
+command but if you do 'pip install upgrade pip' then it'll fail and
+tell you the correct command), installed matplotlib (pip install matplotlib)
+and astropy (pip install [you fill this part in; feel free to google for help]).
+</li>
+<li>
+I then modified the script to use the actual path to my data. That
+complained about not being in 'main' -- but I had an error in my path,
+but still got the same error after correcting. Odd but maybe it requires
+the data being in the same directory as the script (lame if so but oh well)
+. So I copied ('cp' command) one of the FITS files to the same directory
+as my script and ran it again. This time I got an OSError that it's not
+a simple FITS file. The error message mentions how to ignore so I'll try
+that next. I just noticed that happens when I try to print fits.info(image_file)
+so at least it loaded it successfully this time. Now I got empty
+or corrupted FITS file error. Which is certainly possible.
+</li>
+<li>
+So I used ls -l in the data dir to see what was up. The first file
+which I was loading was 2MB whereas most were 4.4MB, so maybe there
+was indeed some corruption. However, I tried the first one that was
+4.4MB and got the same emtpy/corrupt file error. So then I tried a 
+random file and it gave an error during the 'get_pkg_data_filename'
+step. The error was from urllib and looked like it was trying to
+download the file from astropy.com (weird). So maybe I was trying
+to copy-paste the example too closely. Reading the top of the page
+I found that Lia is one of the authors(!) and also that get_pkg_data_filename
+is used to download the file -- which is not what I want since I already have
+the data locally -- and astropy.io.fits is to load the file. That
+sounds more like what I want so I'll open astropy.io.fits in a new
+tab to see how that works. That brought up a janky API reference.
+That's okay we'll just take a deep breath and read a tiny bit. Okay
+open() sounds promising let's start there.
+</li>
+<li>
+Using open also gave the empty/corrupt message. It could be true
+or it could be that fits just isn't handling this correct. There's
+still that .Z extension so I have a feeling I actually have compressed
+FITS files.
+</li>
+<li>
+I first tried 'unzip' but that didn't work. But gunzip did! Let's try
+loading that in astropy again. That worked! Okay. Sadge astropy can't
+autodetect it was zipped from the filename. astropy should be open-source
+and github so I could try adding that feature. But let's not jump
+down that rabbit hole quite yet.
+</li>
+<li>
+Day 3: Part 2. Part 1 actually went 45 minutes. Start is 1:02pm, goal
+is to go to 2pm. I'll save plot.py as plot_v1.py and do manual versioning
+to make it easier for ppl to see the evolution of the file (sure they
+could git diff but let's make it more obvious). That first version
+just loaded the data. Now let's try plotting it.
+</li>
+<li>
+Hmmm. I plotted the data in plot_v4 but it looks all grey. Maybe it
+was a flatfield or some calibration frame though? I guess I'll plot
+them all real quick and then inspect.
+</li>
+<li>
+In v5 I discovered that using fits.open was much more useful
+than trying to blindly get the extension correct - for most of
+the files (I guess except the first one or few) the "primary" hdu
+is not an image (I guess...) but the 4 chips are.
+</li>
+<li>
+Hmmmm, only 3 primaries plotted and they seems at least sort of like
+spectra. The individual chips are different series of grey it looks
+like...
+</li>
+<li>
+Figure 1 of Birkby+ 2013 refers to the plot as being CRIRES pipeline
+spectra. So maybe I'd better head back to ESOREX...
+</li>
+<li>
+I'm at a bit of a crossroads. I took another look at the CRIRES table of
+contents and started skimming Section 8 which discusses reduction for
+nodding (which Birkby+ 2013 says they did for their observations).
+But it talks about ds9 and other tools I don't really want to need
+to install. I'm a bit wary about sort of blindly using esorex. Since
+there's not too many files in esorex's src I just scrolled through
+er_help.c. That wasn't useful but suggests I could go through the src
+files and either actually understand how esorex works or recreate
+its functionality in my python script. One useful thing from the crires
+manual is it mentions I need to grab calibration files from their website.
+Maddeningly though they repeat an instruction (presumably for clarity) and
+say the OPPOSITE of what they wrote above...and it's about pre/post April
+2011 data. Since this is Feb 2011 data this matters for us...
+</li>
+<li>
+The good news is the download page made it clear which data belongs
+to our date range. Downloaded CR_PDL{A,B,C}_100727A_ALL.fits which
+is valid 18 July 2010 to April 2011. Hmmmmmmm, but Birkby+ 2013 uses
+CRIRES pipeline v2.2.1 and I just noticed the non-linearity cofficiencts
+cube for pipeline v2.1.x is for the April 2011 - January 2012 data.
+It's also possible Birkby used a later one... Well, I guess I'll
+go with the data relevant to when the observations were taken - or at
+least try to, it's possible esorex is too new and won't play with
+these old separted "detlin" files as much as the "coeffs_cube"...
+</li>
+<li>
+Okay so I put those non-linearity coefficients in a 'calibration'
+directory but I'm still not sure where I grab the darks and flatfields.
+Darks could be compiled on a different day but flatfields I think should
+be same day (and maybe same day is best for darks too).
+</li>
+<li>
+The calibration page (where I downloaded the non-linear coefficient data,
+namely here: https://www.eso.org/observing/dfo/quality/CRIRES/pipeline/pipe_calib.html, which I found from the documentation pdf) mentions the calibration data (darks, flats etc.) are taken as part of the daily CRIRES plan and/or upon request; they're marked by the DPR TYPE keyword in the FITS headers. As I was writing this I realized that maybe I haven't downloaded the data yet since for the explorer maybe I only selected data relevant to that HD object. But first I'll inspect the FITS headers that I have.
+</li>
+<li>
+Well, I manually inspected the headers for the first few primaries which
+each had 0.5 second exposures and again a wealth of information there
+but not what I'm looking for. I then used python to look specifically for
+DPR in a header and there were a few. For DPR TYPE all but one were object
+the other one was SKY which is not in the list. So I'm guessing
+I need to go back to the data explorer and maybe look for all the things
+on the night of/before/after and try to find the calibration data (darks,flats)
+there to download. It's almost 2:30pm now so today I spent in total a bit
+over 2 hours.
+</li>
+<li>
+END (for now)
+</li>
 </ul>
 </ol>
