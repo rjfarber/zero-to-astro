@@ -576,6 +576,68 @@ there to download. It's almost 2:30pm now so today I spent in total a bit
 over 2 hours.
 </li>
 <li>
+Day 4: Sunday May 7th 2023, 8:10am (started 8:07am)
+First a quick recap. Yesterday I found the CRIRES documentation.
+I also set up a python virtual environment and installed astropy
+and other modules to the point I was able to plot the raw data.
+I also took a look at one of esorex's source files (er_help.c)
+</li>
+<li>
+Today I'm moving apartments so I'm going to try this in a series
+of 20-30 minute sessions. The goal for this first session is to
+find and download the darks/flats/etc from the eso data archive.
+</li>
+<li>
+The wifi was slow to connect so I ended up initially at https://archive.eso.org/cms/data-portal.html
+and I decided to open both the raw data query form AND the instrument specific
+query form. On the instrument specific page I clicked on CRIRES.
+This form lets one choose the specific DPR CATG and DPR TYPE including
+specifically darks and flats! But for now I'll just try querying
+by the target name (HD 189733) and the Program Id (186.C-0289).
+  That returned 727 records - quite a few more than what I found before!
+It looks like it returned multiple program IDs though with letters H-J
+at the end.
+  I'll just try searching by the date and maybe remove the target
+name and program to try to find the darks and flats.
+  Okay! Now there are a lot of observations of HD189733 still but there
+are some WAVE,SKY objects/DPR TYPE with CALIB as DPR CATG! Still
+no darks and flats though...Let's try the previous day?
+</li>
+<li>
+July 31 2011 brought up flats and darks for july 31st. That's separated
+by ~48 hours from the science observations though which have a datestamp
+of August 2nd (UTC...) If I instead search August 2 2011 then it brings
+up darks and flats about 6 hours after the last observation -- which
+sounds reasonable :) Okay now I'll download all this stuff.
+</li>
+<li>
+I started to mark them all 1-1 but felt annoyed so I went to the top and
+looked a bit - and found the MarkAll button :)
+It's now 8:28am. I'll shower while that's downloading.
+</li>
+<li>
+Day 4 session 2, now 10:08am
+</li>
+<li>
+Okay! I unpacked, cleaned up/sorted things in the new room and showered.
+I have another load+ of stuff to grab from my old apartment and need
+breakfast/lunch but I'm planning on putting another ~20 minutes in now.
+</li>
+<li>
+The goal for this session will be to play around with the calibration
+data. Probably start by creating a master dark. Anyway I first
+unzipped and unfortunately they're all named as fits by date acquired
+I guess. Actually that should be fine since the fits header will indicate
+if they're darks or flats, etc. So let's create that master dark by
+taking the median of all the darks. I'll do this in create_master_dark.py
+</li>
+<li>
+Okay! After some iterating I know have master darks created for each chip.
+The next step will be to create a master flat. I'll do that after I break
+for lunch + move a bit more though. It's now 10:52am so I spent ~45 minutes
+in this session.
+</li>
+<li>
 END (for now)
 </li>
 </ul>
