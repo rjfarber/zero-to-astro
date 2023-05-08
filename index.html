@@ -660,6 +660,79 @@ I don't think I have the master flat quite right yet. It's now
 and maybe have better ideas a bit later.
 </li>
 <li>
+Day 5, 9:47am
+</li>
+<li>
+Well, I ~immediately realized I should just normalize to the maximum
+value in each flat but continued to move, worked on my Superwinds project,
+called family, dealt with logistics of a conference I'm co-organizing
+for the end of the month and then it was midnight.
+</li>
+<li>
+I have 4 meetings today (rather a lot) but my goal is still to put in 2
+hours. Even better if I can do an extra 45 minutes to make up for yesterday
+and I think day 2 I spent only 1.5 hours.
+</li>
+<li>
+The median is still super small...so possibly there are some hot pixels
+that are throwing off the normalization. Let's make a histogram of the
+values for one chip for one frame to inspect what's going on.
+</li>
+<li>
+Plotting the histogram indicated there are rather a lot of negative values,
+which was made more clear by printing min,max,median,mean. Commenting out
+the dark subtraction helped a bit. So I'm not totally sure if I need to
+toss garbage pixels when constructing the dark vs tossing out negatives
+after subtracting the dark. I guess if the value is negative that means
+the thermal current is on average larger so it's pointless and could be
+masked out.
+</li>
+<li>
+Hmmmm the mean and median are still super small. I need to break to prep
+for my first meeting today though. It's now 10:07am so I spent 20 minutes.
+Maybe I'll try using esorex when I get back...
+</li>
+<li>
+Day 5 session 2, 11:28am
+</li>
+<li>
+I just realized that while I tossed out the negatives I forgot about
+dealing with hot pixels. Let's see if those are more evident in the
+histogram that excludes negatives.
+</li>
+<li>
+The histogram still wasn't very clear but inspecting percentiles made
+it clear: about 0.1% of the data (for this chip and this frame at least)
+is MUCH larger than most pixels. I remembered that Birkby+ 2013 mentioned
+handling bad pixels and indeed Section 2.2 they say the total of
+bad pixels was 0.2-0.9%. Also note that the 0.1% above is about 5
+standard deviations. So I'll do the normalization now by grabbing the
+maximum value 5 standard deviations above the mean.
+</li>
+<li>
+That was still rather small. Let me check what it is excluding zeros tho.
+Nope not much bigger when masking zeros.
+</li>
+<li>
+So I think v4 was in fact the most sensible. I was concerned then that
+there were some values greater than zero. But I guess if these are
+dawn flats then the sky gets progressively brighter so I actually
+would need to scale down the later flats to get a fair median.
+I just ran v4 again and indeed that seemed the best. So it's time
+to proceed!
+</li>
+<li>
+Okay so I have a master dark as well as a master flat. I also downloaded
+some calibration files of DPR TYPE "MATRIX,INTERACTION,PRIM" as well as
+"WAVE,LAMP" and additionally "WAVE,ABSORPTION-CELL". I'm not sure
+what to do with those exactly. There's also those nonlinear coefficients
+to use. It's now 12:10pm so I spent 40 minutes now and it's lunch time.
+When i get back I'm going to read Birkby+ 2013 to prepare a presentation
+for group meeting (it's an arxiv round). Probably the next most useful
+thing would be to actually read the CRIRES user manual and/or source
+code...
+</li>
+<li>
 END (for now)
 </li>
 </ul>
