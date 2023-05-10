@@ -733,7 +733,138 @@ thing would be to actually read the CRIRES user manual and/or source
 code...
 </li>
 <li>
+Day 6.
+</li>
+<li>
+I had a rather longer workout than planned and also had to grab groceries
+so I didn't end up doing the last 15 minutes yesterday. Anyway, I've
+planned to do 3 hours today so that should get me back to an average
+of 2 hours per day (and be a bit higher than that actually). I started
+at 9am and did a 25 minute session, reading the CRIRES user manual.
+Nice review on AO and possibly useful reading but nothing noteworthy.
+Second session 9:30am through now (9:40am) and I've just read the section
+on correcting the detector for non-linearity: this is supposed to be
+applied to the science AND flat fields. Also note the detector glow
+from dark exposures looks quite bad at the corners. It says
+nodding will remove it though so I guess we'll be okay.
+</li>
+<li>
+It's now session 3 (10a - 10:45a; now 10:02am) and I've found the
+static calibration tables as a result of links in the user manual
+and further link clicking around the ESO CRIRES/pipeline page.
+I've learned that EsoReflex is not supported for CRIRES and that
+I should be able to reduce data with EsoRex (command-line) or
+Gasgano (Java based GUI tool) just as well. Anyway the calibration
+table webpage is here: https://www.eso.org/observing/dfo/quality/CRIRES/pipeline/pipe_calib.html
+and you have to scroll down a bit.
+</li>
+<li>
+One other thing I learned is that data packages were provided for
+data pre October 2011 such as in this work! So maybe I can find
+the data packages, and otherwise I just have to do extra work
+(which I've been doing).
+</li>
+<li>
+Note from CRIRES service mode page, if line spectrum is dominated by 1-2
+lines then weaker lines may not affect cross-correlation (for calibration);
+in that case use logs of the line intensities (--wl_log=true for
+pipeline recipe crires_spec_wavecal).
+</li>
+<li>
+Recall how I was confused about the flats getting brighter? In turns
+out these are not dusk/dawn twilight flats but instead are using a lamp
+and they increase the exposure level in each flat to handle non-linear
+effects with a quadartic fitting function. So probably it'll be tough
+for me to create master flats on my own and I'll want to use esorex :)
+</li>
+<li>
+If I was going to do this manually more useful information here
+(specifically that quadratic pixel fitting function):
+https://www.eso.org/observing/dfo/quality/CRIRES/pipeline/recipe_calib.html
+Also note that one should subtract darks of the same DIT (exposure time)
+from the flat; also for making master darks (I didn't check the exposure
+times for either!!)
+</li>
+<li>
+Sounds useful: Recipe. All CRIRES science data are reduced using the pipeline recipe cires_spec_jitter. The recipe offers the following reduction steps: dark subtraction, correction for detector non-linearity, flat-fielding, image combination, spectrum extraction, wavelength calibration.
+Also note that for nodding, dark subtraction is handled automatically with
+the sky subtraction (pikachu waaat meme) -- it makes sense though because
+the sky includes the dark current so when subtracting from the science frame
+it removes the dark current and sky background.
+</li>
+<li>
+NOTE: Thorium-Argon lamp provides lots of lines UP TO 2500nm (so that
+won't likely be useful for calibration for us; in contrast sky lines
+should be plentiful). Also N20 lines are recognized wavelength standards
+beyond 3500nm; shorter wavelengths availabile in the HITRAN database (CFA)
+but note no lines below 1650nm and weak lines 1650-2100nm -- so it sounds
+like we can use the N20 lines as an independent check of calibration
+using the sky line! There's also a CO gas cell and mentions NIST has
+a line list (so I'm not sure if it's relevant for us but I would think so).
+Note that the atmosphere contains N20 lines which affect L band (us),
+although I'm not sure why we care for wavelength calibration whether the
+line originates from the atmosphere vs the lamp...
+</li>
+<li>
+Day 6 8:30am
+</li>
+<li>
+Yesterday I spent a total of 3 hours over ~6 sessions. All of it was
+reading the CRIRES webpages on eso or the user manual, though which
+is sort of what I was trying to avoid as far as doing this as efficiently
+as possible. Oh well. I've only spent a total of 10 hours 15 minutes on
+this project so far. It'll be interesting to see how long it takes me
+to make a paper totally solo. I'd guess somewhere between 100 - 1000 hours.
+Since yesterday was rather hardcore and I need to put more time into
+my other project + referee report + applications, I've decided to scale
+this back. The goal will be to put in 0.5 - 1.5 quality hours per day
+(note that the hours I'm tracking are not calendar hours as breaks don't
+count; I'm not sure if that's in practice best since yesterday I skipped
+lunch and didn't take breaks as a result...)
+</li>
+<li>
+This first session I'll continue reading, but more ideally skim for
+less relevant sections, the CRIRES user manual. I'm on page 82/129
+and would like to finish it.
+</li>
+<li>
+Note that the FITS file labelled SKY part way through the night
+was likely for characterizing how much water vapor there was
+in the sky (has AO and tracking off for it).
+</li>
+<li>
+Birkby+ 2013 says they use order 17 and Table 8b of the CRIRES user
+manual suggests using sky emission lines for order 17; good to know.
+</li>
+<li>
+Okay so I finished the CRIRES user manula and returned to the cookbook
+document. However, it referenced not just the CRIRES user manual but
+also a CRIRES pipeline manual...So I took a look at the ESO manual
+section again and I found the latest version of the CRIRES pipeline
+manual but don't see a way to find historical versions. So I'll have
+to hope things haven't changed too much. I'm now on p. 17/91 and it's
+walking through how to use gasgano. So I guess I'll install and follow
+along.
+</li>
+<li>
+Hmmmm. The Gasgano page says that one should download it as part of the
+instrument specfic software kit. Back on the pipelines page I can download
+the latest kit version. But I wonder if this will be rather a problem
+since this version is much later than what would've been used by Birkby+ 2013.
+I found that I could replace the version number in the link URL to download
+an older version of the source kit. Anyway I looked at Birkby+ 2013 again
+and they used esorex. So I guess I'll just download the latest version
+of the source kit but plan to do things manually / with esorex to make
+sure I understand what's going on and that there's not an anachronism problem.
+</li>
+<li>
+Automated crires-source kit installation failed because cpl is already
+installed. I don't really feel like using gasgano that much so I'll
+just leave this be for now. I'm now on p. 23/91 of the pipeline manual.
+That's all for today (3 sets of 20 minutes = 11.25 hours total).
+</li>
+<li>
 END (for now)
 </li>
 </ul>
-</ol>
+</ol> 
